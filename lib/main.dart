@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -10,7 +11,52 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: ,
+      home: PixabayPage(),
+    );
+  }
+}
+
+class PixabayPage extends StatefulWidget {
+  const PixabayPage({super.key});
+
+  @override
+  State<PixabayPage> createState() => _PixabayPageState();
+}
+
+class _PixabayPageState extends State<PixabayPage> {
+  List imageList = [];
+
+  Future<void> fetchImages() async {
+  Response response = await Dio().get(
+   'https://pixabay.com/api/?key=30777988-554f88de1fcac32563a9040fe&q=yellow+flowers&image_type=photo&pretty=true'
+  );
+  // print(response.data);
+  imageList = response.data['hits'];
+  setState(() {
+    
+  });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchImages();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: GridView.builder(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3
+        ),
+        itemCount: imageList.length,
+        itemBuilder: (context, index) {
+          Map<String, dynamic> image = imageList[index];
+          return Image.network(image['previewURL']);
+        },
+      ),
     );
   }
 }
