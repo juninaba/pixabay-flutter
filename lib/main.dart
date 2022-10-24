@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 void main() {
   runApp(const MyApp());
@@ -66,30 +70,45 @@ class _PixabayPageState extends State<PixabayPage> {
         itemCount: imageList.length,
         itemBuilder: (context, index) {
           Map<String, dynamic> image = imageList[index];
-          return Stack(
-            fit: StackFit.expand,
-            children: [
-              Image.network(
-                image['previewURL'],
-                fit: BoxFit.cover,
-              ),
-              Align(
-                alignment: Alignment.bottomRight,
-                child: Container(
-                  color: Colors.white,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(
-                        Icons.thumb_up_alt_outlined,
-                        size: 14,
-                      ),
-                      Text(image['likes'].toString()),
-                    ],
-                  )
+          return InkWell(
+            onTap: () async {
+              Directory dir = await getTemporaryDirectory();
+              Response response = await Dio().get(
+                image['webformatURL'],
+                options: Options(
+                  responseType: ResponseType.bytes,
+                )
+              );
+
+              File imageFile = await File('${dir.path}/image.png').writeAsBytes(response.data);
+
+              await Share.shareFiles([imageFile.path]);
+            },
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                Image.network(
+                  image['previewURL'],
+                  fit: BoxFit.cover,
                 ),
-              ),
-            ],
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: Container(
+                    color: Colors.white,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(
+                          Icons.thumb_up_alt_outlined,
+                          size: 14,
+                        ),
+                        Text(image['likes'].toString()),
+                      ],
+                    )
+                  ),
+                ),
+              ],
+            ),
           );
         },
       ),
