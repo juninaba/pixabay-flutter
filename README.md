@@ -4,6 +4,9 @@ A new Flutter project.
 
 https://zenn.dev/flutteruniv/books/flutter-textbook/viewer/search-free-image-1
 
+![CleanShot 2022-10-25 at 14 57 08](https://user-images.githubusercontent.com/43479094/197694086-ca4602b9-7599-45ea-b264-d48cce17abd4.gif)
+
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
