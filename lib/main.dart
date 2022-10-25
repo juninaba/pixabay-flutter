@@ -31,19 +31,33 @@ class _PixabayPageState extends State<PixabayPage> {
   List imageList = [];
 
   Future<void> fetchImages(String text) async {
-  final response = await Dio().get(
-   'https://pixabay.com/api/',
-   queryParameters: {
-    'key': '30777988-554f88de1fcac32563a9040fe',
-    'q': text,
-    'image_type': 'photo',
-    'per_page': 100,
-   }
-  );
-  imageList = response.data['hits'];
-  setState(() {
-    
-  });
+    final response = await Dio().get(
+     'https://pixabay.com/api/',
+     queryParameters: {
+      'key': '30777988-554f88de1fcac32563a9040fe',
+      'q': text,
+      'image_type': 'photo',
+      'per_page': 100,
+     }
+    );
+    imageList = response.data['hits'];
+    setState(() {
+      
+    });
+  }
+
+  Future<void> shareImage(String url) async {
+    final dir = await getTemporaryDirectory();
+    final response = await Dio().get(
+      url,
+      options: Options(
+        responseType: ResponseType.bytes,
+      )
+    );
+
+    final imageFile = await File('${dir.path}/image.png').writeAsBytes(response.data);
+
+    await Share.shareFiles([imageFile.path]);
   }
 
   @override
@@ -77,17 +91,7 @@ class _PixabayPageState extends State<PixabayPage> {
           Map<String, dynamic> image = imageList[index];
           return InkWell(
             onTap: () async {
-              final dir = await getTemporaryDirectory();
-              final response = await Dio().get(
-                image['webformatURL'],
-                options: Options(
-                  responseType: ResponseType.bytes,
-                )
-              );
-
-              final imageFile = await File('${dir.path}/image.png').writeAsBytes(response.data);
-
-              await Share.shareFiles([imageFile.path]);
+              shareImage(image['webformatURL']);
             },
             child: Stack(
               fit: StackFit.expand,
