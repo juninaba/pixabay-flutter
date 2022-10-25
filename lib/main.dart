@@ -124,3 +124,15 @@ class _PixabayPageState extends State<PixabayPage> {
     );
   }
 }
+
+class PixabayImage {
+  final String previewURL;
+  final int likes;
+  final String webformatURL;
+
+  PixabayImage({
+    required this.previewURL,
+    required this.likes,
+    required this.webformatURL
+  });
+}
