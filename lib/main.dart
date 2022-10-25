@@ -32,9 +32,14 @@ class _PixabayPageState extends State<PixabayPage> {
 
   Future<void> fetchImages(String text) async {
   final response = await Dio().get(
-   'https://pixabay.com/api/?key=30777988-554f88de1fcac32563a9040fe&q=$text&image_type=photo&pretty=true'
+   'https://pixabay.com/api/',
+   queryParameters: {
+    'key': '30777988-554f88de1fcac32563a9040fe',
+    'q': text,
+    'image_type': 'photo',
+    'per_page': 100,
+   }
   );
-  // print(response.data);
   imageList = response.data['hits'];
   setState(() {
     
